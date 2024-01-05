@@ -23,7 +23,7 @@ app.get('/sendpostrequest', async (req, res) => {
     
     // Get page and limit from request query parameters
     const page = req.query.page ? parseInt(req.query.page) : 1;
-    const limit = req.query.limit ? parseInt(req.query.limit) : 7;
+    const limit = req.query.limit ? parseInt(req.query.limit) : 8;
 
     // Calculate offset based on page and limit
     const startIndex = (page - 1) * limit;
