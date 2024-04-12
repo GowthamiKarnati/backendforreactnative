@@ -95,7 +95,7 @@ console.log(req.body);
       res.send(response.data);
   } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ error: 'Error fetching data from OpenAI API' });
+      res.status(500).json({ error: error });
   }
 });
 
