@@ -4,7 +4,11 @@ const axios = require('axios');
 const app = express();
 const port = 4000;
 
+require('dotenv').config(); 
+
+//app.use(bodyParser.json());
 app.use(cors());
+app.use(express.json());
 
 app.get('/', (req, res) => {
   console.log('Received a request');
@@ -55,6 +59,51 @@ async function getAllRecords(url, headers, sheetId) {
 
   return response.data.data;
 }
+
+app.post('/completions', async (req, res) => {
+  // Ensure the request body contains the expected structure
+  if (!req.body || typeof req.body.message !== 'string') {
+      return res.status(400).json({ error: 'Invalid request data' });
+  }
+console.log(req.body);
+  // Set up the request payload
+  const data = {
+      model: 'gpt-3.5-turbo',
+      messages: [
+          {
+              role: 'user',
+              content: req.body.message,
+          },
+      ],
+      max_tokens: 100,
+  };
+
+  // Define the Axios request options
+  const axiosOptions = {
+      method: 'post',
+      url: 'https://api.openai.com/v1/chat/completions',
+      headers: {
+          'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+      },
+      data: data,
+  };
+
+  // Make the request to the OpenAI API using Axios
+  try {
+      const response = await axios(axiosOptions);
+      res.send(response.data);
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Error fetching data from OpenAI API' });
+  }
+});
+
+
+
+
+
+
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
